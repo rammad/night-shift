@@ -12,30 +12,6 @@ const seen = { wrist: 0, elbow: 0, held: 0, left: 0, right: 0, people: 0 }, held
 const POSE_FPS = 30, WRIST_MIN = .2, ELBOW_MIN = .3, HOLD_MS = 1000;
 const reach = new ReachMapper(); let lastFrameAt = 0, wantTracking = true, trackingState = "idle", requestStarted = 0;
 const NO_FRAMES_MS = 10000;
-let preview = null, previewPending = false, previewTried = false, previewEpoch = 0;
-function stopPreview() {
-  previewEpoch++; previewPending=false; previewTried=false;
-  if (preview) { const video=$('video'); if (video.srcObject===preview.stream) video.srcObject=null; preview.stop(); preview=null; }
-}
-async function syncPreview() {
-  const wanted=hosted && tracking && !hostPaused && !userPaused && game?.state().onboarding;
-  if (!wanted) { if (preview || previewPending || previewTried) stopPreview(); return; }
-  if (preview || previewPending || previewTried) return;
-  previewTried=true;
-  if (!app.can('media.camera')) { window.dockPreviewStatus='PREVIEW NOT GRANTED'; return; }
-  if (!window.isSecureContext) { window.dockPreviewStatus='LIVE PREVIEW NEEDS HTTPS'; return; }
-  previewPending=true; const epoch=++previewEpoch;
-  window.dockPreviewStatus='OPENING CAMERA…';
-  try {
-    const result=await app.media.camera({facing:'user',width:640,height:360,fps:15});
-    if (epoch!==previewEpoch || !game.state().onboarding || hostPaused || userPaused) { if(result.ok)result.stop(); return; }
-    previewPending=false;
-    if (!result.ok) { window.dockPreviewStatus='CAMERA PREVIEW UNAVAILABLE'; return; }
-    preview=result; const video=$('video'); video.srcObject=result.stream;
-    await video.play(); window.dockPreviewStatus='';
-  } catch { if(epoch===previewEpoch) { stopPreview();previewTried=true;window.dockPreviewStatus='CAMERA PREVIEW UNAVAILABLE'; } }
-}
-
 const status = text => {
   $('status').textContent = text;
   const notice = $('camera-notice');
@@ -48,7 +24,7 @@ const stopTracking = () => { stopPose?.(); stopPose = undefined; };
 
 function syncPause() {
   if (!game) return;
-  if (hostPaused || userPaused) { game.pause(); stopTracking(); stopPreview(); }
+  if (hostPaused || userPaused) { game.pause(); stopTracking(); }
   else { game.resume(); if (tracking && !stopPose) subscribePose(); }
   $('pause').textContent = userPaused ? 'RESUME' : 'PAUSE';
 }
@@ -95,7 +71,7 @@ function enableTracking() {
   if (!subscribePose()) return { ok: false, detail: $('status').textContent };
   return { say: 'Camera tracking requested. Approve access on the TV if prompted.' };
 }
-function useRemote() { stopPreview(); wantTracking = false; tracking = false; trackingState = 'remote'; stopTracking(); game.remote(); status('Arrows move the gloves; Enter raises/drops them. Back pauses, then exits.'); }
+function useRemote() { wantTracking = false; tracking = false; trackingState = 'remote'; stopTracking(); game.remote(); status('Arrows move the gloves; Enter raises/drops them. Back pauses, then exits.'); }
 function save() { if (game && hosted) void app.saveState({ ...game.state(), userPaused }); }
 
 function enter(info) {
@@ -141,7 +117,6 @@ function ready() {
   setInterval(() => {
     if (hostPaused) return;
     const s = game.state();
-    void syncPreview();
     $('score').dataset.littleData = JSON.stringify({ value: s.score });
     $('clock').dataset.littleData = JSON.stringify({ seconds: s.timeLeft });
     $('pause').dataset.littleAction = userPaused ? 'resume_game' : 'pause_game';
@@ -174,4 +149,4 @@ window.addEventListener('keydown', event => {
     if (event.key === 'Enter' && !event.repeat) { event.preventDefault(); raised = !raised; game.raise(raised); }
   }
 }, true);
-window.addEventListener('pagehide', () => { stopPreview(); stopTracking(); game?.stopCamera(); });
+window.addEventListener('pagehide', () => { stopTracking(); game?.stopCamera(); });

@@ -82,8 +82,8 @@ Useful direct links while the server runs:
 Browser camera testing downloads MediaPipe from its CDN and needs network access.
 Little TV uses its host pose service instead. Setup automatically continues after
 1.2 seconds of a centered upper body and one visible hand; no calibration required.
-The live pixelated TV preview additionally needs `media.camera` permission and an
-HTTPS, camera-capable origin. LAN HTTP can supply pose without live preview.
+Setup displays a basic skeleton from pose tracking; no live video preview or
+additional media.camera permission is requested on TV.
 
 ## 3. Build the deliverable
 
@@ -196,7 +196,6 @@ these build instructions.
 | Need another port | PowerShell: `$env:PORT='5180'; npm.cmd start`. Bash: `PORT=5180 npm start`. Then use `little dev --device hackathon-tv --app-url http://127.0.0.1:5180`. |
 | Preview gives 404 | Run `npm run build` before `npm run preview`. |
 | TV times out but localhost works | Check the TV/computer LAN, firewall and selected LAN interface. VPN or virtual-network adapters can select an unreachable address. |
-| No live camera preview over LAN HTTP | Expected secure-context limitation. Use a verified HTTPS origin; pose gameplay can still work over LAN HTTP. |
 | Camera refuses access | Check the active household profile and camera permission, then relaunch the app. |
 | Changes don't show | Rebuild if serving `dist/`; refresh/relaunch. Source dev serving does not auto-reload. |
 

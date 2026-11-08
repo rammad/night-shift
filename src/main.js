@@ -20,7 +20,7 @@ const input = new Input(stage, $('video'));
 const params = new URLSearchParams(location.search);
 const shift = new Shift();
 let onboarding = new Onboarding();
-const setupPanel = new CameraPanel($('setup-preview'), $('video'), true);
+const setupPanel = new CameraPanel($('setup-preview'));
 $('setup-remote').onclick = () => { unlockAudio(); api.remote(); onboarding.done = true; };
 const TASKS = GAMES.map(G => new G(() => .5).title);
 let paused = false, last = performance.now();
@@ -116,7 +116,7 @@ for (const [k, t] of Object.entries(THEMES)) $('theme').add(new Option(t.name, k
 $('theme').value = view.themeKey;
 $('theme').onchange = () => { view.setTheme($('theme').value); localStorageSet('theme', view.themeKey); $('theme').blur(); };
 // Camera panel (what the camera sees) unless ?nocam.
-const camPanel = !params.has('cam') ? null : new CameraPanel($('campip'), $('video'));
+const camPanel = !params.has('cam') ? null : new CameraPanel($('campip'));
 if (!camPanel) $('campip').hidden = true;
 // Dev controls stay out of sight unless ?dev is in the URL. The game itself needs no keyboard.
 if (!params.has('dev')) { document.body.classList.add('hide-controls'); view.showMarks = params.has('marks'); }

@@ -43,16 +43,3 @@ test('repeated host entry does not restart an existing shift',()=>{
  assert.equal(h.game.resets,1);
 });
 
-test('preview requests once during setup and releases when setup finishes',async()=>{
- let stopped=0;const stream={};const h=harness(true,{ok:true,stream,stop:()=>stopped++});
- h.game.onboarding=true;h.tick(200);await new Promise(r=>setImmediate(r));
- assert.equal(h.cameraRequests(),1);assert.equal(h.elements.video.srcObject,stream);
- h.tick(300);assert.equal(h.cameraRequests(),1);
- h.game.onboarding=false;h.tick(400);assert.equal(stopped,1);assert.equal(h.elements.video.srcObject,null);
-});
-test('preview obtained after setup ends is immediately released',async()=>{
- let resolve,stopped=0;const pending=new Promise(r=>resolve=r);const h=harness(true,pending);
- h.game.onboarding=true;h.tick(200);h.game.onboarding=false;h.tick(300);
- resolve({ok:true,stream:{},stop:()=>stopped++});await new Promise(r=>setImmediate(r));
- assert.equal(stopped,1);
-});

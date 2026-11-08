@@ -1,6 +1,4 @@
-// "What the camera sees" panel. The TV only gives us pose keypoints (never video over plain
-// http), so we draw the skeleton; with the browser webcam we also show the mirrored video.
-// Feed it with window.dockPose = { keypoints: [{ name, x, y, score }], t } (x/y 0..1, camera space).
+// Skeleton preview from pose keypoints; no live video is displayed.
 const BONES = [
   ['left_shoulder', 'right_shoulder'], ['left_shoulder', 'left_elbow'], ['left_elbow', 'left_wrist'],
   ['right_shoulder', 'right_elbow'], ['right_elbow', 'right_wrist'], ['left_shoulder', 'left_hip'],
@@ -10,32 +8,12 @@ const BONES = [
 const MIN = .2;
 
 export class CameraPanel {
-  constructor(canvas, video, previewOnly = false) {
-    this.previewOnly = previewOnly;
-    this.pixel = document.createElement('canvas'); this.pixel.width=240; this.pixel.height=135;
-    this.pg = this.pixel.getContext('2d');
-    this.c = canvas; this.g = canvas.getContext('2d'); this.video = video; this.frames = []; this.lastT = 0;
+  constructor(canvas) {
+    this.c = canvas; this.g = canvas.getContext('2d'); this.frames = []; this.lastT = 0;
   }
   draw(now, pose, mirrored = true) {
     const g = this.g, w = this.c.width, h = this.c.height;
     g.fillStyle = '#16131a'; g.fillRect(0, 0, w, h);
-    const live = this.video?.srcObject && this.video.readyState >= 2;
-    if (this.previewOnly) {
-      if (live) {
-        const v=this.video, pw=this.pixel.width, ph=this.pixel.height;
-        const scale=Math.max(pw/v.videoWidth,ph/v.videoHeight);
-        this.pg.drawImage(v,(pw-v.videoWidth*scale)/2,(ph-v.videoHeight*scale)/2,v.videoWidth*scale,v.videoHeight*scale);
-        g.save();g.imageSmoothingEnabled=false;g.translate(w,0);g.scale(-1,1);g.drawImage(this.pixel,0,0,w,h);g.restore();
-        g.fillStyle='rgba(28,20,36,.08)';for(let y=0;y<h;y+=4)g.fillRect(0,y,w,1);
-      } else {
-        g.strokeStyle='#b9ad91';g.lineWidth=2;g.strokeRect(w*.25,h*.12,w*.5,h*.76);
-        g.fillStyle='#e5d7bc';g.font='16px Silkscreen, monospace';g.textAlign='center';
-        g.fillText(window.dockPreviewStatus || 'CAMERA PREVIEW UNAVAILABLE',w/2,h/2);
-        g.textAlign='left';
-      }
-      return;
-    }
-    if (live) { g.save(); g.translate(w, 0); g.scale(-1, 1); g.globalAlpha = .75; g.drawImage(this.video, 0, 0, w, h); g.restore(); }
     // Each hand's reach box: anywhere inside it maps onto the whole desk.
     const boxes = window.dockReach;
     if (boxes) for (const [side, col] of [['left', 'rgba(59,111,214,.8)'], ['right', 'rgba(224,83,61,.8)']]) {
