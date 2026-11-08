@@ -1,0 +1,77 @@
+{
+  "title": "Night Shift",
+  "description": "Play Night Shift, a drunk office-worker party game: flip open the phone, then stamp, copy and staple paperwork with your hands. Launch when the viewer asks to play Night Shift.",
+  "launchSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+  },
+  "capabilities": [
+    {
+      "name": "sense.pose",
+      "reason": "Use your hand movements to open the phone and to stamp, copy and staple paperwork."
+    }
+  ],
+  "tools": [
+    {
+      "name": "start_shift",
+      "description": "Skip the phone intro and start a new three-job shift (stamp, copy, staple).",
+      "authority": "mutate",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "pause_game",
+      "description": "Pause the game timer.",
+      "authority": "mutate",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "resume_game",
+      "description": "Resume the paused game.",
+      "authority": "mutate",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "enable_tracking",
+      "description": "Enable TV camera hand tracking after the viewer asks to play using their body.",
+      "authority": "mutate",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "use_remote",
+      "description": "Stop camera tracking and use remote arrow controls.",
+      "authority": "mutate",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "get_status",
+      "description": "Read the current job, score, drunk level and time remaining.",
+      "authority": "read",
+      "params": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ]
+}

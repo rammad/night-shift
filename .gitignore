@@ -1,3 +1,17 @@
 node_modules/
 .DS_Store
 *.log
+
+# Local tools, credentials and generated releases
+dist/
+release/
+work/
+screenshots/
+.env
+.env.*
+!.env.example
+little.json
+*.zip
+
+# Private, UNLICENSED third-party SDK: provision via npm run setup:sdk
+vendor/little.mjs

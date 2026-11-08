@@ -1,1 +1,22 @@
-{"name":"dock-drunk","version":"0.1.0","private":true,"type":"module","scripts":{"start":"node server.js","check":"node --check game.js && node --check server.js"}}
+{
+  "name": "night-shift",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node -e \"for (const f of require('fs').readdirSync('src')) require('child_process').execSync('node --check src/'+f,{stdio:'inherit'})\" && node --check little-bridge.js && node --check server.js",
+    "test": "node --test test/*.test.js",
+    "sim": "node test/sim.mjs",
+    "build": "node scripts/build.mjs",
+    "package": "npm run check && npm test && npm run build && node scripts/package.mjs",
+    "preview": "node server.js --dist",
+    "setup:sdk": "node scripts/setup-sdk.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@kabletv/little-sdk": "0.39.1"
+  }
+}

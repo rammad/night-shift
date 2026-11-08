@@ -1,0 +1,108 @@
+[
+  {
+    "name": "fisherman",
+    "triangles": 4236,
+    "vertices": 2398,
+    "bones": 17,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": [
+      "Idle",
+      "Cast",
+      "Chop"
+    ]
+  },
+  {
+    "name": "perch",
+    "triangles": 856,
+    "vertices": 545,
+    "bones": 5,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": [
+      "Swim"
+    ]
+  },
+  {
+    "name": "mackerel",
+    "triangles": 856,
+    "vertices": 545,
+    "bones": 5,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": [
+      "Swim"
+    ]
+  },
+  {
+    "name": "flatfish",
+    "triangles": 856,
+    "vertices": 545,
+    "bones": 5,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": [
+      "Swim"
+    ]
+  },
+  {
+    "name": "cleaver",
+    "triangles": 1900,
+    "vertices": 1011,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "stamp-fresh",
+    "triangles": 772,
+    "vertices": 499,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "stamp-expired",
+    "triangles": 964,
+    "vertices": 627,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "cutting-board",
+    "triangles": 246,
+    "vertices": 150,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "parcel",
+    "triangles": 148,
+    "vertices": 101,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "hook",
+    "triangles": 296,
+    "vertices": 162,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "worm",
+    "triangles": 832,
+    "vertices": 482,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  },
+  {
+    "name": "rod",
+    "triangles": 1182,
+    "vertices": 645,
+    "bones": 2,
+    "source": "showcase/model-source/build-models.mjs",
+    "clips": []
+  }
+]

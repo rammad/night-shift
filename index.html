@@ -1,1 +1,51 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dock Drunk</title><link rel="stylesheet" href="style.css"></head><body><header><b>DOCK DRUNK <small>prototype 01</small></b><span id="score">0 POINTS</span></header><main id="stage"><div id="hud"><span id="task">THE EARLY SHIFT</span><b id="clock">15</b></div><div id="hint">Four jobs. Fifteen seconds each. Questionable freshness.</div><div id="left" class="hand">L</div><div id="right" class="hand">R</div><div id="target"></div><div id="message">WELCOME TO WORK</div><div id="inks"><span data-ink="0">GREEN ✓</span><span data-ink="1">RED ×</span></div></main><footer><button id="start">START SHIFT</button><button id="camera">ENABLE CAMERA</button><select id="mode"><option value="mouse">Mouse / keyboard</option><option value="camera">Camera</option><option value="external">External</option></select><label>Tracking <select id="rate"><option>10</option><option selected>15</option><option>30</option></select> fps</label><p id="status">Mouse = right hand · Shift + mouse = left · Hold Space = both hands raised; release = lower</p><p>Camera: stand back with both arms visible. Raise both hands beside either shoulder to charge.</p></footer><video id="video" autoplay playsinline muted hidden></video><script type="module" src="game.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Night Shift</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-state="phone">
+<main id="stage" aria-label="Office desk">
+  <section id="onboarding" aria-label="Camera setup">
+    <h1>NIGHT SHIFT</h1><h2>GET IN FRAME & CALIBRATE</h2>
+    <canvas id="setup-preview" width="640" height="360" aria-label="Live body tracking preview"></canvas>
+    <p id="setup-checks"></p><p id="setup-status" aria-live="polite">Keep your head, shoulders and one hand in view.</p>
+    <progress id="setup-progress" max="1" value="0" aria-label="Calibration progress"></progress>
+    <p class="setup-how">STAMP: ink, then touch the target. · COPY: grab a sheet, hold it over the glass.<br>STAPLE: move the paper with one hand. The machine staples every 2 seconds.</p>
+    <button id="setup-remote">PLAY WITH REMOTE / KEYBOARD</button>
+    <p class="setup-keys">Remote: arrows move, Enter raises hands. Keyboard: Space raises hands.</p>
+  </section>
+  <div id="hud">
+    <div class="tag" id="task"></div>
+    <div class="tag" id="score">0</div>
+    <div class="tag" id="clock"></div>
+  </div>
+  <div id="count"></div>
+  <div id="big"></div>
+  <div id="sub"></div>
+  <div id="meter" hidden><span id="meter-label">PULL!</span><div><i id="meter-fill"></i></div></div>
+  <div id="results" hidden></div>
+  <section id="conversation" hidden aria-live="polite"></section>
+  <div id="message"></div>
+  <canvas id="campip" width="256" height="144" aria-label="What the camera sees"></canvas>
+  <div id="fade"></div>
+  <div id="tracking" hidden>TRACKING LOST — KEEP ONE HAND IN VIEW</div>
+</main>
+<footer id="controls">
+  <button id="start">START SHIFT</button>
+  <button id="pause">PAUSE</button>
+  <select id="practice-round" aria-label="Practice round"><option value="0">Stamp</option><option value="1">Copy</option><option value="2">Staple</option></select>
+  <button id="practice">PRACTICE</button>
+  <select id="theme" aria-label="Desk theme"></select>
+  <button id="camera">ENABLE CAMERA</button>
+  <select id="mode" aria-label="Input mode"><option value="mouse">Mouse / keyboard</option><option value="camera">Camera</option><option value="external">External / TV</option></select>
+  <label>Tracking <select id="rate"><option>10</option><option>15</option><option selected>30</option></select> fps</label>
+  <p id="status">Dev bar (?dev) · mouse = right hand, left mirrors · Shift/right-click holds left · Space = both up · T = theme · H = hide</p>
+</footer>
+<video id="video" autoplay playsinline muted hidden></video>
+<script type="module" src="little-bridge.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
