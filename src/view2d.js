@@ -311,7 +311,7 @@ export class View2D {
   }
 
   draw_copy(game, h) {
-    for (let i = 0; i < 6; i++) this.paper(X(game.pile.x) + (i % 2) * 3, Y(game.pile.y) - i * 3, 143, 184, (i % 3 - 1) * .03, 0, i === 5);
+    for (let i = 0; i < 6; i++) this.paper(X(game.pile.x) + (i % 2) * 3, Y(game.pile.y) - i * 3, X(LAYOUT.copyPaper.w), Y(LAYOUT.copyPaper.h), (i % 3 - 1) * .03, 0, i === 5);
     this.copier(game);
     const r = h.right;
     if (game.holder) this.paper(X(r.x), Y(r.y) + 10, 133, 173, Math.sin(this.t * 6) * .06 * (game.scan > 0 ? .2 : 1), game.scan > 0 ? .08 : .25);
@@ -321,10 +321,10 @@ export class View2D {
 
   draw_staple(game, h) {
     const g = this.g, s = game.stack, sx = X(s.x + s.slide * .7), sy = Y(s.y), PW = X(LAYOUT.staplePaper.w), PH = Y(LAYOUT.staplePaper.h);
-    // The papers are in your left hand.
+    // The active hand carries the paper, including offscreen.
     g.save(); g.translate(sx, sy); g.rotate(s.spin + s.slide * .4);
     for (let i = 0; i < 4; i++) this.paper((i % 2) * 5 - 2, -i * 4, PW, PH, (i - 1.5) * .03, .06, i === 3);
-    const cx = X(TUNING.staple.cornerX), cy = Y(TUNING.staple.cornerY);
+    const cx = X(game.target.x), cy = Y(game.target.y);
     if (game.phase !== 'done') { const col = game.aligned ? INK.approved : INK.rejected; g.strokeStyle = col; g.lineWidth = 3; g.beginPath(); g.arc(cx, cy, 13, 0, 7); g.stroke(); g.fillStyle = col; g.fillRect(cx - 1.5, cy - 17, 3, 34); g.fillRect(cx - 17, cy - 1.5, 34, 3); }
     for (const mark of game.marks) {
       const mx = X(mark.x), my = Y(mark.y);

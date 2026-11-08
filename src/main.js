@@ -20,7 +20,7 @@ const input = new Input(stage, $('video'));
 const params = new URLSearchParams(location.search);
 const shift = new Shift();
 let onboarding = new Onboarding();
-const setupPanel = new CameraPanel($('setup-preview'), $('video'));
+const setupPanel = new CameraPanel($('setup-preview'), $('video'), true);
 $('setup-remote').onclick = () => { unlockAudio(); api.remote(); onboarding.done = true; };
 const TASKS = GAMES.map(G => new G(() => .5).title);
 let paused = false, last = performance.now();
@@ -88,7 +88,7 @@ function tick(now) {
     $('setup-status').textContent = readiness.message;
     $('setup-checks').textContent = (readiness.visible ? '✓ Upper body visible' : '○ Upper body visible') + '    ' + (readiness.centered ? '✓ Centered' : '○ Centered');
     $('setup-progress').value = readiness.progress;
-    if (readiness.done) { window.dockCalibration = onboarding.calibration; shift.toPhone(); input.tracked.pendingReset = true; }
+    if (readiness.done) { shift.toPhone(); input.tracked.pendingReset = true; }
   }
   if (!paused && !settingUp) {
     shift.update(dt, raw);
@@ -129,7 +129,7 @@ window.addEventListener('keydown', e => {
 // Stable API used by little-bridge.js.
 const api = window.dockGame = {
   start() { api.resume(); onboarding.done = true; if (!['intro', 'play', 'roundEnd'].includes(shift.state)) shift.start(); },
-  reset() { api.resume(); onboarding = new Onboarding(); window.dockCalibration = null; shift.toPhone(); },
+  reset() { api.resume(); onboarding = new Onboarding(); shift.toPhone(); },
   state() {
     const r = p => ({ x: +p.x.toFixed(2), y: +p.y.toFixed(2) });
     return { ...shift.snapshot(), onboarding: !onboarding.done, paused, input: input.mode, hands: { left: r(shift.hands.left), right: r(shift.hands.right) }, opener: shift.opener ? { phase: shift.opener.phase, progress: +shift.opener.progress.toFixed(2) } : null };

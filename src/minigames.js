@@ -120,7 +120,7 @@ export class CopyGame {
     }
     if (!this.holder) {
       this.sheet = { ...this.pile }; this.scan = 0; this.prompt = 'GRAB A SHEET';
-      if (dist(r, this.pile) < TC.pileRadius) { this.holder = 'right'; ctx.emit('grab', { hand: 'right' }); }
+      if (Math.abs(r.x - this.pile.x) <= LAYOUT.copyPaper.w / 2 + .02 && r.y >= this.pile.y - LAYOUT.copyPaper.h / 2 - LAYOUT.copyPaper.stackRise - .03 && r.y <= this.pile.y + LAYOUT.copyPaper.h / 2 + .03) { this.holder = 'right'; ctx.emit('grab', { hand: 'right' }); }
       return;
     }
     this.sheet = { x: r.x, y: r.y + .02 };
@@ -143,8 +143,13 @@ export class CopyGame {
 // The stapler is fixed on the desk. Your left hand moves the papers: line the corner mark up
 // under the stapler's nose. Then raise your right hand and swing it down to staple.
 export const STAPLER = LAYOUT.stapler;
+export const STAPLE_TARGETS = Object.freeze([
+  { x: .135, y: -.175 }, { x: .105, y: -.17 },
+  { x: .13, y: -.125 }, { x: .095, y: -.14 },
+]);
 export class StapleGame {
-  constructor() {
+  constructor(random = Math.random) {
+    this.random = random; this.targetIndex = -1; this.nextTarget();
     this.key = 'staple'; this.title = 'STAPLE'; this.verb = 'LINE UP THE PAPER!'; this.duration = TP.duration;
     this.count = 0; this.misses = 0; this.t = 0;
     this.stack = { x: .45, y: LAYOUT.stapleY, spin: 0, slide: -1 };
@@ -152,29 +157,37 @@ export class StapleGame {
     this.marks = []; this.slam = 0; this.height = 1; this.aligned = false; this.result = '';
     this.prompt = 'MOVE THE PAPER WITH ONE HAND';
   }
-  corner() { return { x: this.stack.x + TP.cornerX, y: this.stack.y + TP.cornerY }; }
+  nextTarget() {
+    const count = STAPLE_TARGETS.length;
+    // Select among all OTHER locations, including under deterministic test RNGs.
+    const offset = Math.min(count - 2, Math.floor(this.random() * (count - 1))) + 1;
+    this.targetIndex = (this.targetIndex + offset) % count;
+    this.target = { ...STAPLE_TARGETS[this.targetIndex] };
+  }
+  corner() { return { x: this.stack.x + this.target.x, y: this.stack.y + this.target.y }; }
   update(dt, h, ctx) {
     this.t += dt; this.slam = Math.max(0, this.slam - dt);
     const s = this.stack, p = h.right, paper = LAYOUT.staplePaper;
-    // Keep the stack under the machine so every strike leaves a visible staple.
-    s.x += (clamp(p.x, STAPLER.x - paper.w / 2 + .025, STAPLER.x + paper.w / 2 - .025) - s.x) * clamp(dt * 18);
-    s.y += (clamp(p.y, STAPLER.y - paper.h / 2 + .025, STAPLER.y + paper.h / 2 - .025) - s.y) * clamp(dt * 18);
+    // Follow the hand freely; the paper may extend beyond the screen.
+    s.x += (p.x - s.x) * clamp(dt * 18);
+    s.y += (p.y - s.y) * clamp(dt * 18);
     if (this.phase !== 'live') {
       this.timer -= dt;
       s.slide = this.phase === 'in' ? -Math.max(0, this.timer) / .35 : 1 - Math.max(0, this.timer) / .6;
       if (this.timer <= 0) {
         if (this.phase === 'in') { this.phase = 'live'; s.slide = 0; this.nextStaple = TP.interval; }
-        else { this.phase = 'in'; this.timer = .35; this.marks = []; this.result = ''; }
+        else { this.phase = 'in'; this.timer = .35; this.marks = []; this.result = ''; this.nextTarget(); }
       }
       this.aligned = false; return;
     }
-    this.aligned = dist(this.corner(), STAPLER) < TP.tolerance;
+    this.aligned = dist(this.corner(), STAPLER) < TP.tolerance && Math.abs(STAPLER.x-s.x) <= paper.w/2-.013 && Math.abs(STAPLER.y-s.y) <= paper.h/2-.013;
     this.nextStaple -= dt;
     this.height = this.slam > 0 ? 0 : Math.min(1, this.nextStaple / .3);
     this.prompt = (this.aligned ? 'ON TARGET — HOLD HERE! ' : 'MOVE THE TARGET UNDER THE STAPLER ') + Math.ceil(Math.max(0, this.nextStaple));
     if (this.nextStaple > 0) return;
     this.nextStaple = TP.interval; this.slam = .25;
-    this.marks.push({ x: STAPLER.x - s.x, y: STAPLER.y - s.y });
+    const hit = { x: STAPLER.x - s.x, y: STAPLER.y - s.y };
+    if (Math.abs(hit.x) <= paper.w / 2 - .013 && Math.abs(hit.y) <= paper.h / 2 - .013) this.marks.push(hit);
     if (this.aligned) { this.count++; this.result = 'clean'; this.phase = 'done'; this.timer = .6; ctx.emit('staple', { ...STAPLER }); }
     else { this.misses++; this.result = 'miss'; ctx.emit('clack', { ...STAPLER }); }
   }

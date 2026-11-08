@@ -21,7 +21,7 @@ export const TUNING = {
   },
   copy: {
     duration: 20,
-    pileRadius: .08, glassRadius: .085,
+    glassRadius: .085,
     slipSpeed: 3.0, slipPerLevel: .3,   // carry the sheet faster than this and it may flutter off
     slipChance: 2.6,                    // per (unit of excess speed × second)
     scanTime: 1.3, calmSpeed: .7,       // hold the sheet over the glass, calmer than this, for this long
@@ -29,7 +29,6 @@ export const TUNING = {
   staple: {
     duration: 12,
     interval: 2,                       // automatic strike every two seconds
-    cornerX: .094, cornerY: -.115,      // corner mark offset from the stack centre (= your left hand)
     tolerance: .06,                    // how close the corner must be to the stapler's nose
     armY: .4, slamY: .6,                // right hand above armY raises the stapler; swinging down past slamY slams it
     slamTravel: .16,                  // relative downward travel: slam anywhere on screen
@@ -38,10 +37,10 @@ export const TUNING = {
   raise: { upY: .32, downY: .45, hold: .6 }, // hands-up to open the phone: above upY for hold seconds
   // One-handed reach (camera/TV). Units are shoulder widths, so it scales with distance.
   reach: {
-    out: .525,          // each hand's box is centred this far outside its own shoulder…
+    out: .61,          // each hand's box is centred this far outside its own shoulder…
     down: .6,         // …and this far below shoulder height
-    spanX: 2.05,       // box width  → the whole desk width
-    spanY: 1.75,       // box height → the whole desk height
+    spanX: 2.22,       // box width  → the whole desk width
+    spanY: 1.88,       // box height → the whole desk height
     follow: 1.0,      // seconds for the boxes to follow you when you shift around
     minShoulder: .04, minScore: .2,
   },

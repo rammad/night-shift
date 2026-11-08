@@ -74,7 +74,7 @@ test('stapler strikes automatically, keeps missed staples, then scores the align
  const mark = {...g.marks[0]};
  run(g,wrong,ctx,TUNING.staple.interval);
  assert.equal(g.marks.length,2); assert.deepEqual(g.marks[0],mark);
- const at = H(STAPLER.x-TUNING.staple.cornerX,STAPLER.y-TUNING.staple.cornerY);
+ const at = H(STAPLER.x-g.target.x,STAPLER.y-g.target.y);
  run(g,{left:away,right:at},ctx,TUNING.staple.interval);
  assert.equal(g.count,1); assert.equal(g.marks.length,3);
  run(g,{left:away,right:at},ctx,1);
@@ -152,4 +152,35 @@ test('restoring after stamp round completion advances to copy rather than replay
  assert.equal(s.state,'roundEnd');
  const restored=new Shift();restored.restore(s.snapshot());
  assert.equal(restored.game.key,'copy');assert.equal(restored.results.length,1);
+});
+import { LAYOUT } from '../src/layout.js';
+
+test('copy pickup includes all paper edges as soon as the cursor touches',()=>{
+ const p=LAYOUT.pile, size=LAYOUT.copyPaper;
+ for(const [x,y] of [[p.x-size.w/2,p.y],[p.x+size.w/2,p.y],[p.x,p.y-size.h/2-size.stackRise],[p.x,p.y+size.h/2],[p.x+size.w/2,p.y-size.h/2]]){
+  const g=new CopyGame();g.update(1/60,{left:away,right:H(x,y)},ctxFor());assert.equal(g.holder,'right');
+ }
+ const g=new CopyGame();g.update(1/60,{left:away,right:H(.8,.9)},ctxFor());assert.equal(g.holder,null);
+});
+
+test('staple paper follows the hand offscreen and air strikes leave no floating staple',()=>{
+ const g=new StapleGame(()=>0),ctx=ctxFor();
+ run(g,{left:away,right:H(1.04,1.04)},ctx,3);
+ assert.ok(g.stack.x>1 && g.stack.y>1);
+ assert.equal(g.marks.length,0);assert.ok(g.misses>0);
+});
+
+test('new staple targets stay inside smaller paper and never repeat consecutively',()=>{
+ const g=new StapleGame(()=>0);
+ for(let i=0;i<12;i++){
+  const old=g.targetIndex;g.nextTarget();assert.notEqual(g.targetIndex,old);
+  assert.ok(Math.abs(g.target.x)+.02<LAYOUT.staplePaper.w/2);
+  assert.ok(Math.abs(g.target.y)+.032<LAYOUT.staplePaper.h/2);
+ }
+});
+
+test('stapler cannot score an air strike near the target edge',()=>{
+ const g=new StapleGame(()=>0),ctx=ctxFor();
+ run(g,{left:away,right:H(.32,.575)},ctx,3);
+ assert.equal(g.count,0);assert.equal(g.marks.length,0);
 });

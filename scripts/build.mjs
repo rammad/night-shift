@@ -4,6 +4,8 @@ import { createHash } from 'node:crypto';
 const root = path.resolve(import.meta.dirname, '..');
 const out = path.resolve(root, 'dist');
 if (path.dirname(out) !== root || path.basename(out) !== 'dist') throw Error('Unsafe build directory');
+try { await fs.access(path.join(root,'vendor/little.mjs')); }
+catch { throw Error('Missing Little SDK. Run npm ci and npm run setup:sdk first; see README.md section 1.'); }
 console.log('Building only in ' + out);
 await fs.rm(out, { recursive:true, force:true });
 await fs.mkdir(out, { recursive:true });

@@ -10,6 +10,10 @@
     {
       "name": "sense.pose",
       "reason": "Use your hand movements to open the phone and to stamp, copy and staple paperwork."
+    },
+    {
+      "name": "media.camera",
+      "reason": "Show a live, lightly pixelated camera preview during the in-frame setup screen."
     }
   ],
   "tools": [

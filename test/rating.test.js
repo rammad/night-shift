@@ -9,8 +9,8 @@ test('rating rewards output, respects practice targets, and returns F for no wor
  assert.equal(shiftRating([{key:'staple',points:400}]),'A+');
  assert.equal(shiftRating([{key:'stamp',points:1000},{key:'copy',points:800},{key:'staple',points:400}]),'A+');
 });
-test('calibrated comfortable reach maps to the full desk and follows shoulder position',()=>{
- const m=new ReachMapper(); m.setCalibration({side:'right',cx:.5,cy:.3,w:1,h:1});
+test('default reach maps its bounds to the full desk',()=>{
+ const m=new ReachMapper();
  const k={left_shoulder:{x:.6,y:.4,score:1},right_shoulder:{x:.4,y:.4,score:1}};
  m.update(k,0);
  const box=m.boxes().right;

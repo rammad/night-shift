@@ -93,11 +93,10 @@ export class Input {
           const keypoints = MP_NAMES.map((name, j) => name && p[j] ? { name, x: p[j].x, y: p[j].y, score: p[j].visibility ?? 1 } : null).filter(Boolean);
           const k = Object.fromEntries(keypoints.map(q => [q.name, q]));
           window.dockPose = { t: now, keypoints };
-          this.reach.setCalibration(window.dockCalibration);
           this.reach.update(k, this.lastPoseAt ? (now - this.lastPoseAt) / 1000 : 0); this.lastPoseAt = now;
           window.dockReach = this.reach.boxes();
-          const chosen = window.dockCalibration?.side;
-          this.tracked.push({ left: k.left_wrist.score > .4 ? this.reach.toDesk('left', k.left_wrist) : null, right: chosen === 'left' ? (k.left_wrist.score > .4 ? this.reach.toDesk('left', k.left_wrist) : null) : k.right_wrist.score > .4 ? this.reach.toDesk('right', k.right_wrist) : null }, now);
+
+          this.tracked.push({ left: k.left_wrist.score > .4 ? this.reach.toDesk('left', k.left_wrist) : null, right: k.right_wrist.score > .4 ? this.reach.toDesk('right', k.right_wrist) : null }, now);
         }
       } catch (e) { this.onStatus(e.message); }
     }

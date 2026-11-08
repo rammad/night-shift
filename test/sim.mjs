@@ -32,7 +32,7 @@ const bots = {
     return { left: arms.left.step({ x: .1, y: .93 }), right: arms.right.step(goal) };
   },
   staple(g, h, arms) {
-    const at = { x: STAPLER.x - TUNING.staple.cornerX, y: STAPLER.y - TUNING.staple.cornerY };
+    const at = { x: STAPLER.x - g.target.x, y: STAPLER.y - g.target.y };
     return { left: arms.left.step({ x: .1, y: .9 }), right: arms.right.step(at, 1.6) };
   },
 };
