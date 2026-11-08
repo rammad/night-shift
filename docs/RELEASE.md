@@ -2,8 +2,9 @@
 
 ## Local, reproducible build
 
-Requires Node 22+. The vendored Little SDK and local Silkscreen font are included;
-no npm credentials or runtime npm install are needed to build.
+Requires Node 22+. Run the authenticated SDK setup in README.md first. The deployed site includes
+the SDK and local Silkscreen font; no credentials are needed after setup. The
+private SDK is ignored in public source control.
 
 ```powershell
 npm run package
@@ -35,11 +36,11 @@ little manifest validate
 little publish --url https://YOUR-HOST --org YOUR-ORG --slug night-shift --status unlisted --channel beta
 ```
 
-These are release instructions only. No host deployment, publisher linking,
-commit, push or publication has been performed. GitHub org membership is separate
+Building and packaging do not deploy, link a publisher, commit, push or publish.
+The publish command above is a separate release action. GitHub org membership is separate
 from membership in a Little publisher org.
 
-Before release, test on TV: calibration with each hand, camera permission,
+Before release, test on TV: automatic in-frame setup with either hand, camera permission,
 scanner reach, all three jobs exactly once, loss/reacquisition of tracking,
 pause/resume, audio clunks and punch-card grades. Use the published beta to verify
 launching after the laptop and its dev server are off.
